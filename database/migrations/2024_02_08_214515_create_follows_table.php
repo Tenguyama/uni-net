@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('follows', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->uuid('trackable_id');
+            $table->string('trackable_type', 128);
+            $table->foreignUuid('follower_id')->constrained('consumers', 'id')->cascadeOnUpdate()->cascadeOnDelete();//consumer_id
+
+            $table->index(['trackable_id', 'trackable_type']);
+
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('follows');
     }
 };

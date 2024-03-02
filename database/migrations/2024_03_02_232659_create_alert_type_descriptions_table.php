@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('alert_type_descriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('alert_type_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('language_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('description');
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('alert_type_descriptions');
     }
 };
