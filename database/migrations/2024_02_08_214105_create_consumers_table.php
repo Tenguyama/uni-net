@@ -15,16 +15,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nickname')->unique();
             $table->string('email')->unique();
-            $table->string('password');
-            $table->string('firstname');
-            $table->string('lastname');
-            $table->string('status');
-            $table->string('description');
-            $table->foreignUuid('fakult_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignUuid('group_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('password')->nullable();
+            $table->string('name');
+            $table->string('status')->nullable();
+            $table->string('description')->nullable();
+            $table->foreignUuid('fakult_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUuid('group_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('telegram_nickname')->nullable();
-            //CSRF TOKEN
-            $table->boolean('is_locked');
+            $table->boolean('is_locked')->default('false');
         });
     }
 

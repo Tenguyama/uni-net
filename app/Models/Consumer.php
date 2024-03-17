@@ -2,19 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
-class Consumer extends Model
+class Consumer extends Authenticatable
 {
-    use HasUuids;
-
-    use HasFactory;
+    use HasApiTokens,
+        HasFactory,
+        HasUuids,
+        Notifiable;
 
     protected $primaryKey = 'id';
 
@@ -22,14 +26,28 @@ class Consumer extends Model
 
     public $timestamps = false;
 
-    public function fakult(): HasOne
+    protected static function boot()
     {
-        return $this->hasOne(Fakult::class);
+        parent::boot();
+        static::creating(fn (Consumer $consumer) =>  $consumer->nickname = explode('@', $consumer->email)[0]);
+        static::deleting(fn (Consumer $consumer) => $consumer->tokens()->delete());
     }
 
-    public function group(): HasOne
+    private function password(): Attribute
     {
-        return $this->hasOne(Group::class);
+        return Attribute::make(
+            set: fn (string $password) => Hash::make($password)
+        );
+    }
+
+    public function fakult(): BelongsTo
+    {
+        return $this->belongsTo(Fakult::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class);
     }
     public function alerts(): HasMany
     {
