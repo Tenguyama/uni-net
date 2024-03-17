@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\CommentLikeController;
 use App\Http\Controllers\Api\v1\ConsumerController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -27,6 +28,20 @@ Route::prefix('v1')
                 Route::delete('/logout', [ConsumerController::class, 'logout']);
                 Route::put('/update', [ConsumerController::class, 'update']);
                 Route::delete('/delete', [ConsumerController::class, 'delete']);
+            });
+            //Comment
+            Route::group(['prefix'=>'comment'], function () {
+
+
+                //CommentLike
+                Route::group(['prefix' => 'like'], function () {
+                    //create    +
+                    //update    +
+                    //delete    +
+                    Route::post('/create', [CommentLikeController::class, 'create']);
+                    Route::put('/update', [CommentLikeController::class, 'update']);
+                    Route::delete('/delete', [CommentLikeController::class, 'delete']);
+                });
             });
         });
         Route::middleware('guest')->group( function () {
