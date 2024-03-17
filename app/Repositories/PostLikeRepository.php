@@ -37,7 +37,7 @@ class PostLikeRepository
             ->first();
 
         if(isset($postLike) and !empty($postLike)){
-            return $this->model->query()->updateOrCreate($postLike->id, $params);
+            return $this->model->query()->updateOrCreate(['id'=>$postLike->id], $params);
         }else{
             return $this->model->query()->create($params);
         }

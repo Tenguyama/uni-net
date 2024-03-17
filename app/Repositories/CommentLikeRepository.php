@@ -37,7 +37,7 @@ class CommentLikeRepository
             ->first();
 
         if(isset($commentLike) and !empty($commentLike)){
-            return $this->model->query()->updateOrCreate($commentLike->id, $params);
+            return $this->model->query()->updateOrCreate(['id'=>$commentLike->id], $params);
         }else{
             return $this->model->query()->create($params);
         }

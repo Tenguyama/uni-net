@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\CommentLikeController;
+use App\Http\Controllers\Api\v1\CommunityController;
 use App\Http\Controllers\Api\v1\ConsumerController;
 use App\Http\Controllers\Api\v1\PostLikeController;
 use App\Http\Controllers\TestController;
@@ -29,6 +30,12 @@ Route::prefix('v1')
                 Route::delete('/logout', [ConsumerController::class, 'logout']);
                 Route::put('/update', [ConsumerController::class, 'update']);
                 Route::delete('/delete', [ConsumerController::class, 'delete']);
+            });
+            //Community
+            Route::group(['prefix' => 'community'], function(){
+                Route::post('/create', [CommunityController::class, 'create']);
+                Route::put('/update/{id}',  [CommunityController::class, 'update']);
+                Route::delete('/delete/{community}',  [CommunityController::class, 'delete']);
             });
             //Comment
             Route::group(['prefix'=>'comment'], function () {
