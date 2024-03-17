@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Consumer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -45,7 +46,8 @@ class ConsumerRepository
         );
         return  [
             'token' => $consumer->createToken('Sanctom+Socialite')->plainTextToken,
-            'consumer' => $consumer->makeHidden('password')->toArray(),
+            'consumer' => $consumer,
+            //'consumer' => $consumer->makeHidden('password')->toArray(),
         ];
     }
     protected function validateProvider($provider)
@@ -66,7 +68,8 @@ class ConsumerRepository
 
         return [
             'token'=>$consumer->createToken('Sanctum')->plainTextToken,
-            'consumer' => $consumer->makeHidden('password')->toArray(),
+            'consumer' => $consumer,
+            //'consumer' => $consumer->makeHidden('password')->toArray(),
         ];
     }
 
@@ -103,5 +106,12 @@ class ConsumerRepository
         }else{
             return false;
         }
+    }
+
+    public function search(SearchRequest $request){
+        return $this->model->query()
+            ->where('nickname', 'like', '%' . $request->input('query') . '%')
+            ->orWhere('email', 'like', '%' . $request->input('query') . '%')
+            ->get();
     }
 }

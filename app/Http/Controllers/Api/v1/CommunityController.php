@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Community\CommunityRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Community;
 use App\Services\CommunityService;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +15,7 @@ class CommunityController extends Controller
     //create    +
     //update    +
     //delete    +
+    //search    +
     private readonly CommunityService $service;
 
     public function __construct(
@@ -34,5 +36,10 @@ class CommunityController extends Controller
     public function delete(Community $community): JsonResponse
     {
         return new JsonResponse($this->service->delete($community),204);
+    }
+
+    public function search(SearchRequest $request): JsonResponse
+    {
+        return new JsonResponse($this->service->search($request), 200);
     }
 }

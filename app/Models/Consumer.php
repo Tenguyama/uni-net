@@ -26,6 +26,8 @@ class Consumer extends Authenticatable
 
     public $timestamps = false;
 
+    protected $hidden = ['password',];
+
     protected static function boot()
     {
         parent::boot();

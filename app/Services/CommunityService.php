@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\Community\CommunityRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Community;
 use App\Repositories\CommunityRepository;
 
@@ -33,5 +34,9 @@ class CommunityService
     }
     public function delete(Community $community){
         return $this->repository->delete($community);
+    }
+
+    public function search(SearchRequest $request){
+        return $this->repository->search($request);
     }
 }

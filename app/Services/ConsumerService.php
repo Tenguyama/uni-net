@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
+use App\Http\Requests\SearchRequest;
 use App\Repositories\ConsumerRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -46,5 +47,9 @@ class ConsumerService
     }
     public function delete(){
         return $this->repository->delete();
+    }
+
+    public function search(SearchRequest $request){
+        return $this->repository->search($request);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
+use App\Http\Requests\SearchRequest;
 use App\Services\ConsumerService;
 use Illuminate\Http\JsonResponse;
 
@@ -17,6 +18,7 @@ class ConsumerController extends Controller
     //logout                +
     //update                +
     //delete                +
+    //search                +
     private readonly ConsumerService $service;
 
     public function __construct(
@@ -47,5 +49,10 @@ class ConsumerController extends Controller
     public function delete(): JsonResponse
     {
        return new JsonResponse($this->service->delete(),204);
+    }
+
+    public function search(SearchRequest $request): JsonResponse
+    {
+        return new JsonResponse($this->service->search($request), 200);
     }
 }

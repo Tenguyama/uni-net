@@ -78,4 +78,15 @@ Route::prefix('v1')
             });
         });
 
+        //Consumer
+        Route::group(['prefix'=>'consumer'], function (){
+           Route::post('/search', [ConsumerController::class, 'search']);
+        });
+        //Community
+        Route::group(['prefix'=>'community'], function (){
+            Route::post('/search', [CommunityController::class, 'search']);
+        });
+
+
+
     });

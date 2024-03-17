@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\Community\CommunityRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Community;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,5 +43,11 @@ class CommunityRepository
 
     public function delete(Community $community){
         return $community->delete();
+    }
+
+    public function search(SearchRequest $request){
+        return $this->model->query()
+            ->where('nickname', 'like', '%' . $request->input('query') . '%')
+            ->get();
     }
 }
