@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\CommentLikeController;
 use App\Http\Controllers\Api\v1\ConsumerController;
+use App\Http\Controllers\Api\v1\PostLikeController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')
     ->name('v1')
     ->group(function () {
-        Route::middleware('auth:sanctum')->group( function () {
+        Route::middleware('auth:sanctum')->group( callback: function () {
             //Consumer
             Route::group(['prefix' => 'consumer'], function() {
                 //logout                +
@@ -41,6 +42,20 @@ Route::prefix('v1')
                     Route::post('/create', [CommentLikeController::class, 'create']);
                     Route::put('/update', [CommentLikeController::class, 'update']);
                     Route::delete('/delete', [CommentLikeController::class, 'delete']);
+                });
+            });
+            //Post
+            Route::group(['prefix'=>'post'], function () {
+
+
+                //PostLike
+                Route::group(['prefix' => 'like'], function () {
+                    //create    +
+                    //update    +
+                    //delete    +
+                    Route::post('/create', [PostLikeController::class, 'create']);
+                    Route::put('/update', [PostLikeController::class, 'update']);
+                    Route::delete('/delete', [PostLikeController::class, 'delete']);
                 });
             });
         });
