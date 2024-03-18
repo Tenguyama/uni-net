@@ -22,6 +22,13 @@ class Community extends Model
 
     public $timestamps = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function (Community $community) {
+            $community->media()->delete();
+        });
+    }
     public function consumer(): BelongsTo
     {
         return $this->belongsTo(Consumer::class);

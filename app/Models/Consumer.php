@@ -33,7 +33,10 @@ class Consumer extends Authenticatable
     {
         parent::boot();
         static::creating(fn (Consumer $consumer) =>  $consumer->nickname = explode('@', $consumer->email)[0]);
-        static::deleting(fn (Consumer $consumer) => $consumer->tokens()->delete());
+        static::deleting(function (Consumer $consumer) {
+            $consumer->tokens()->delete();
+            $consumer->media()->delete();
+        });
     }
 
     private function password(): Attribute
