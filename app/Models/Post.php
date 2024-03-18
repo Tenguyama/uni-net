@@ -36,7 +36,7 @@ class Post extends Model
     {
         return $this->morphTo();
     }
-
+    //polimorph
     public function media(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable');

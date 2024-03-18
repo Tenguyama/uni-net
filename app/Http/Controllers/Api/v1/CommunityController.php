@@ -22,12 +22,12 @@ class CommunityController extends Controller
     ) {
         $this->service = CommunityService::getInstance();
     }
-
+    //доробити щоб з аватарками робило
     public function create(CommunityRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->create($request), 201);
     }
-
+    //доробити щоб з аватарками робило
     public function update(CommunityRequest $request, string $id): JsonResponse
     {
         return new JsonResponse($this->service->update($request, $id), 201);
@@ -38,6 +38,7 @@ class CommunityController extends Controller
         return new JsonResponse($this->service->delete($community),204);
     }
 
+    //доробити щоб з аватарками вертало
     public function search(SearchRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->search($request), 200);

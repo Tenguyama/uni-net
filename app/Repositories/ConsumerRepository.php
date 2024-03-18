@@ -7,6 +7,7 @@ use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Consumer;
+use App\Models\Media;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -44,6 +45,19 @@ class ConsumerRepository
                 'name' => $providerUser->getName(),
             ]
         );
+
+        if (!$consumer->media()->exists()) {
+            $media = new Media();
+            $media->mediable_id = $consumer->id;
+            $media->mediable_type = $this->model::class;
+            //тут я не впевнений, може такого і нема будем тестити
+            //але точно можна витягнути, питання тільки як
+            $media->path = $providerUser->getAvatar();
+            $media->save();
+        }
+
+        $consumer->load('media');
+
         return  [
             'token' => $consumer->createToken('Sanctom+Socialite')->plainTextToken,
             'consumer' => $consumer,
@@ -66,6 +80,8 @@ class ConsumerRepository
             ]);
         }
 
+        $consumer->load('media');
+
         return [
             'token'=>$consumer->createToken('Sanctum')->plainTextToken,
             'consumer' => $consumer,
@@ -74,8 +90,10 @@ class ConsumerRepository
     }
 
     public function logout(){
-        Auth::logout();
-        return null;
+        return Auth::user()->currentAccessToken()->delete();
+        //або, треба тестити
+        //Auth::user()->currentAccessToken()->delete();
+        //return null;
     }
 
     public function update(ConsumerRequest $request) {
@@ -95,6 +113,21 @@ class ConsumerRepository
 
         $consumer->save();
 
+        if ($request->has('avatar')) {
+            $avatarUrl = $request->input('avatar');
+            $media = $consumer->media()->first();
+            if (isset($media) and !empty($media)) {
+                $media->path = $avatarUrl;
+                $media->save();
+            } else {
+                $media = new Media();
+                $media->mediable_id = $consumer->id;
+                $media->mediable_type = $this->model::class;
+                $media->path = $avatarUrl;
+                $media->save();
+            }
+        }
+        $consumer->load('media');
         return $consumer;
     }
 
@@ -112,6 +145,7 @@ class ConsumerRepository
         return $this->model->query()
             ->where('nickname', 'like', '%' . $request->input('query') . '%')
             ->orWhere('email', 'like', '%' . $request->input('query') . '%')
+            ->with('media')
             ->get();
     }
 }

@@ -33,6 +33,10 @@ class ConsumerRequest extends FormRequest
             'group_id' => 'nullable|exists:groups,id',
             'telegram_nickname' => 'nullable|string',
             'is_locked' => 'required|boolean',
+            'avatar' => 'sometimes|required|url',
+            //або
+            //'avatar' => 'nullable|url|regex:/\.(jpeg|jpg|gif|png)$/i',
+
         ];
 
     }

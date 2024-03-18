@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\Community\CommunityRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Community;
+use App\Models\Media;
 use Illuminate\Support\Facades\Auth;
 
 class CommunityRepository
@@ -35,10 +36,27 @@ class CommunityRepository
         ];
 
         if(isset($id) and !empty($id)){
-            return $this->model->query()->updateOrCreate(['id'=>$id], $params);
+            $community = $this->model->query()->updateOrCreate(['id'=>$id], $params);
         }else{
-            return $this->model->query()->create($params);
+            $community = $this->model->query()->create($params);
         }
+
+        if ($request->has('avatar')) {
+            $avatarUrl = $request->input('avatar');
+            $media = $community->media()->first();
+            if (isset($media) and !empty($media)) {
+                $media->path = $avatarUrl;
+                $media->save();
+            } else {
+                $media = new Media();
+                $media->mediable_id = $community->id;
+                $media->mediable_type = $this->model::class;
+                $media->path = $avatarUrl;
+                $media->save();
+            }
+        }
+        $community->load('media');
+        return $community;
     }
 
     public function delete(Community $community){
@@ -48,6 +66,7 @@ class CommunityRepository
     public function search(SearchRequest $request){
         return $this->model->query()
             ->where('nickname', 'like', '%' . $request->input('query') . '%')
+            ->with('media')
             ->get();
     }
 }

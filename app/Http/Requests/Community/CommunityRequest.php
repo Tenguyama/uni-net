@@ -28,6 +28,9 @@ class CommunityRequest extends FormRequest
             'nickname' => 'required|string|unique:communities,nickname,' . ($id ? $id : 'NULL'),
             'description' => 'nullable|string',
             'is_locked' => 'required|boolean',
+            'avatar' => 'sometimes|required|url',
+            //або
+            //'avatar' => 'nullable|url|regex:/\.(jpeg|jpg|gif|png)$/i',
         ];
     }
 }

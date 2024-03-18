@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Community extends Model
 {
@@ -40,5 +41,11 @@ class Community extends Model
     public function followers(): MorphMany
     {
         return $this->morphMany(Follow::class,'trackable');
+    }
+
+    //polimorph
+    public function media(): MorphOne
+    {
+        return $this->morphOne(Media::class, 'mediable');
     }
 }

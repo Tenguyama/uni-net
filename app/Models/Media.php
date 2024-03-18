@@ -17,6 +17,8 @@ class Media extends Model
 
     protected $guarded = [];
 
+    protected $hidden = ['id', 'mediable_id', 'mediable_type'];
+
     public $timestamps = false;
 
     //polimorph
