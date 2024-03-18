@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('community_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignUuid('consumer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+
+            $table->unique(['community_id','consumer_id']);
         });
     }
 

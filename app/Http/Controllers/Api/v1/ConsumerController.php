@@ -42,7 +42,6 @@ class ConsumerController extends Controller
     {
         return new JsonResponse($this->service->logout(),204);
     }
-    //доробити щоб з аватарками вертало + (no testing)
     public function update(ConsumerRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->update($request), 201);
@@ -51,9 +50,6 @@ class ConsumerController extends Controller
     {
        return new JsonResponse($this->service->delete(),204);
     }
-
-
-    //доробити щоб з аватарками вертало + (no testing)
     public function search(SearchRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->search($request), 200);
