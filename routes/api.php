@@ -4,9 +4,8 @@ use App\Http\Controllers\Api\v1\CommentLikeController;
 use App\Http\Controllers\Api\v1\CommunityController;
 use App\Http\Controllers\Api\v1\CommunityManagerController;
 use App\Http\Controllers\Api\v1\ConsumerController;
+use App\Http\Controllers\Api\v1\LanguageController;
 use App\Http\Controllers\Api\v1\PostLikeController;
-use App\Http\Controllers\TestController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -94,7 +93,16 @@ Route::prefix('v1')
         Route::group(['prefix'=>'community'], function (){
             Route::post('/search', [CommunityController::class, 'search']);
         });
-
+        //Language
+        Route::group(['prefix'=>'language'], function (){
+            //ONLY FOR ADMIN PANEL
+            //create +
+            //update +
+            //delete +
+            //API
+            //getAll +
+           Route::get('/all' , [LanguageController::class, 'getAll']);
+        });
 
 
     });
