@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\v1\CommentLikeController;
 use App\Http\Controllers\Api\v1\CommunityController;
 use App\Http\Controllers\Api\v1\CommunityManagerController;
+use App\Http\Controllers\Api\v1\ComplaintController;
 use App\Http\Controllers\Api\v1\ConsumerController;
 use App\Http\Controllers\Api\v1\LanguageController;
 use App\Http\Controllers\Api\v1\PostLikeController;
@@ -21,7 +22,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')
     ->name('v1')
     ->group(function () {
-        Route::middleware('auth:sanctum')->group( callback: function () {
+        Route::middleware('auth:sanctum')->group(function () {
+            //Complaint
+            Route::group(['prefix' => 'complaint'], function (){
+                //create +
+                Route::post('/create', [ComplaintController::class, 'create']);
+            });
             //Consumer
             Route::group(['prefix' => 'consumer'], function() {
                 //logout                +

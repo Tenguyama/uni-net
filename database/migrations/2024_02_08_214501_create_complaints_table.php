@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('complaintable_type', 128);
             $table->foreignUuid('consumer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('description');
+            $table->boolean('is_checked')->default(false); // типу чи оброблено модератором
+            $table->timestamps();//щоб потім в адмінці сортувати красиво
 
             $table->index(['complaintable_id', 'complaintable_type']);
 

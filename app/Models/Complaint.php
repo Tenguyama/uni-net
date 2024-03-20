@@ -17,7 +17,7 @@ class Complaint extends Model
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     //polimorph
     public function complaintable(): MorphTo
