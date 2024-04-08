@@ -27,6 +27,9 @@ class Community extends Model
         parent::boot();
         static::deleting(function (Community $community) {
             $community->media()->delete();
+            $community->posts()->delete();
+            $community->communityManagers()->delete();
+            $community->followers()->delete();
         });
     }
     public function consumer(): BelongsTo

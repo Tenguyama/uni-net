@@ -9,8 +9,8 @@ use Illuminate\Http\JsonResponse;
 
 class CommunityManagerController extends Controller
 {
-    //create    +
-    //delete    +
+    //create    ✅
+    //delete    ✅
     private readonly CommunityManagerService $service;
 
     public function __construct(

@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('themes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            //$table->foreignUuid('parent_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();//скоріш за все окремою міграцією
-
             //$table->foreignUuid('language_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();//скоріш за все окремою міграцією
             //$table->string('name')->unique();
         });

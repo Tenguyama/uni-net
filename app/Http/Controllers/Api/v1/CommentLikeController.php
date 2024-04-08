@@ -9,9 +9,9 @@ use Illuminate\Http\JsonResponse;
 
 class CommentLikeController extends Controller
 {
-    //create    +
-    //update    +
-    //delete    +
+    //create   ✅
+    //update   ✅
+    //delete   ✅
     private readonly CommentLikeService $service;
 
     public function __construct(

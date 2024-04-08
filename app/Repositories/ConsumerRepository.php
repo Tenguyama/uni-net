@@ -7,7 +7,9 @@ use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Consumer;
+use App\Models\Follow;
 use App\Models\Media;
+use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -18,9 +20,13 @@ class ConsumerRepository
     protected static $instance;
 
     private readonly Consumer $model;
+    private readonly Post $post;
+    private readonly Follow $follow;
 
     protected function __construct(){
         $this->model = new Consumer();
+        $this->post = new Post();
+        $this->follow = new Follow();
     }
 
     public static function getInstance()
@@ -147,5 +153,114 @@ class ConsumerRepository
             ->orWhere('email', 'like', '%' . $request->input('query') . '%')
             ->with('media')
             ->get();
+    }
+
+    public function getProfile(Consumer $consumer){
+        $consumerId = Auth::check() ? Auth::user()->id : null;
+
+        if ($consumer->id == $consumerId){
+            return $this->authorizeProfile();
+        } else {
+            $resultConsumer = $this->model->query()
+                ->where('id','=',$consumer->id)
+                ->with('media')
+                ->firstOrFail();
+
+            $thisConsumerFollow =  $this->follow->query()
+                ->where('consumer_id','=',$consumerId)
+                ->where('trackable_id','=',$consumer->id)
+                ->where('trackable_type','=',Consumer::class)
+                ->exists();
+            // Кількість підписок користувача на користувачів/групи
+            $consumerFollowCount = $this->follow->query()
+                ->where('consumer_id','=',$consumer->id)
+                ->count();
+
+            // Кількість підписок на користувача
+            $followConsumerCount = $this->follow->query()
+                ->where('trackable_id','=',$consumer->id)
+                ->where('trackable_type','=',Consumer::class)
+                ->count();
+
+            // Перевірка на блокування профілю
+            if($resultConsumer->is_locked){
+                $returnPost = $thisConsumerFollow;
+            } else {
+                $returnPost = true;
+            }
+
+            // Отримання публікацій користувача
+            if ($returnPost) {
+                $posts = $this->getConsumerPosts($consumerId);
+            } else {
+                $posts = [
+                    'message' => 'This profile is locked!',
+                ];
+            }
+
+            return [
+                'consumer' => $resultConsumer,
+                'this_consumer_follow' => $thisConsumerFollow,
+                'consumer_follow_count' => $consumerFollowCount,
+                'follow_consumer_count' => $followConsumerCount,
+                'posts' => $posts,
+            ];
+        }
+    }
+
+    public function authorizeProfile(){
+        $consumerId = Auth::user()->id;
+        $consumer = $this->model->query()
+            ->where('id','=',$consumerId)
+            ->with('media')
+            ->first();
+        //к-сть підписок користувача на користувачів/групи
+        $consumerFollowCount = $this->follow->query()
+            ->where('consumer_id','=',$consumerId)
+            ->count();
+        //к-сть підписок на користувача
+        $followConsumerCount = $this->follow->query()
+            ->where('trackable_id','=',$consumerId)
+            ->where('trackable_type','=',Consumer::class)
+            ->count();
+        //пости користувача
+        $posts = $this->getConsumerPosts($consumerId);
+
+        return [
+            'consumer' => $consumer,
+            //к-сть підписок користувача на користувачів/групи
+            'consumer_follow_count' => $consumerFollowCount,
+            //к-сть підписок на користувача
+            'follow_consumer_count' => $followConsumerCount,
+            //пости користувача
+            'posts' => $posts,
+        ];
+    }
+    private function getConsumerPosts($consumerId) {
+        $posts = $this->post->query()->with([
+            'postLikes' => function ($query) {
+                $query->selectRaw('post_id, COUNT(*) as total')
+                    ->selectRaw("SUM(is_liked = '1') as likes")
+                    ->selectRaw("SUM(is_liked = '0') as dislikes")
+                    ->groupBy('post_id');
+            },
+            'thisConsumerLiked',
+            'media',
+            'postable' => function ($query) {
+                $query->with(['media'])->select(['id', 'nickname']);
+            }
+        ])->where('postable_id' ,'=', $consumerId)->latest()->get();
+        $posts->each(function ($post) {
+            $post->author_details = [
+                'id' => $post->postable->id,
+                'nickname' => $post->postable->nickname,
+                'type' => $post->postable_type instanceof Consumer ? 'consumer' : 'community',
+                'avatar' => $post->postable->media ? $post->postable->media->path : null
+            ];
+            unset($post->postable_id);
+            unset($post->postable_type);
+            unset($post->postable);
+        });
+        return $posts;
     }
 }

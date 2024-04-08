@@ -12,10 +12,11 @@ use Illuminate\Http\Request;
 
 class CommunityController extends Controller
 {
-    //create    +
-    //update    +
-    //delete    +
-    //search    +
+    //create     ✅
+    //update     ✅
+    //delete     ✅
+    //search     ✅
+    //getProfile ✅
     private readonly CommunityService $service;
 
     public function __construct(
@@ -26,9 +27,9 @@ class CommunityController extends Controller
     {
         return new JsonResponse($this->service->create($request), 201);
     }
-    public function update(CommunityRequest $request, string $id): JsonResponse
+    public function update(CommunityRequest $request, Community $community): JsonResponse
     {
-        return new JsonResponse($this->service->update($request, $id), 201);
+        return new JsonResponse($this->service->update($request, $community), 201);
     }
 
     public function delete(Community $community): JsonResponse
@@ -39,5 +40,10 @@ class CommunityController extends Controller
     public function search(SearchRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->search($request), 200);
+    }
+
+    public function getProfile(Community $community): JsonResponse
+    {
+        return new JsonResponse($this->service->getProfile($community),200);
     }
 }

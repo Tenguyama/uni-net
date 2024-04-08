@@ -30,8 +30,8 @@ class Group extends Model
     {
         return $this->hasMany(Consumer::class);
     }
-    public function fakults(): BelongsToMany
+    public function fakults(): BelongsTo
     {
-        return $this->belongsToMany(Fakult::class, 'facult_group');
+        return $this->belongsTo(Fakult::class);
     }
 }

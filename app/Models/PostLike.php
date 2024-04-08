@@ -19,6 +19,8 @@ class PostLike extends Model
 
     public $timestamps = false;
 
+    protected $hidden = ['id', 'post_id', 'consumer_id'];
+
     public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);

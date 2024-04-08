@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('postable_id');
             $table->string('postable_type', 128);
-            $table->foreignUuid('consumer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();;
+            $table->foreignUuid('theme_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('description');
             $table->timestamps();
 

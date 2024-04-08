@@ -7,18 +7,21 @@ use App\Http\Requests\Consumer\ConsumerLoginRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
+use App\Models\Consumer;
 use App\Services\ConsumerService;
 use Illuminate\Http\JsonResponse;
 
 class ConsumerController extends Controller
 {
-    //registerWithProvider  +
-    //loginWithProvider     +
-    //login                 +
-    //logout                +
-    //update                +
-    //delete                +
-    //search                +
+    //registerWithProvider  ✅
+    //loginWithProvider     ✅
+    //login                 ✅
+    //logout                ✅
+    //update                ✅
+    //delete                ✅
+    //search                ✅
+    //authorizeProfile      ✅
+    //getProfile            ✅
     private readonly ConsumerService $service;
 
     public function __construct(
@@ -53,5 +56,15 @@ class ConsumerController extends Controller
     public function search(SearchRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->search($request), 200);
+    }
+
+    public function authorizeProfile()
+    {
+        return $this->service->authorizeProfile();
+    }
+
+    public function getProfile(Consumer $consumer)
+    {
+        return $this->service->getProfile($consumer);
     }
 }

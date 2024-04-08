@@ -36,6 +36,7 @@ class Consumer extends Authenticatable
         static::deleting(function (Consumer $consumer) {
             $consumer->tokens()->delete();
             $consumer->media()->delete();
+            //тут дописати
         });
     }
 

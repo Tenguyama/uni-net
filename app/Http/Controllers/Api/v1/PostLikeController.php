@@ -9,9 +9,9 @@ use Illuminate\Http\JsonResponse;
 
 class PostLikeController extends Controller
 {
-    //create    +
-    //update    +
-    //delete    +
+    //create    ✅
+    //update    ✅
+    //delete    ✅
     private readonly PostLikeService $service;
 
     public function __construct(

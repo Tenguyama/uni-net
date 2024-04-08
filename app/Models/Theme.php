@@ -20,18 +20,12 @@ class Theme extends Model
 
     public $timestamps = false;
 
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
     public function themeDescription(): HasMany
     {
         return $this->hasMany(ThemeDescription::class);
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Theme::class, 'parent_id');
-    }
-
-    public function childrens(): HasMany
-    {
-        return $this->hasMany(Theme::class, 'parent_id');
     }
 }

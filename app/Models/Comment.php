@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Comment extends Model
@@ -39,6 +40,16 @@ class Comment extends Model
     public function childrens(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    public function thisConsumerLiked(): ?HasOne
+    {
+        if(auth()->check()) {
+            return $this->hasOne(CommentLike::class, 'comment_id')
+                ->where('consumer_id', '=', auth()->id());
+        } else {
+            return null;
+        }
     }
 
     public function commentLikes(): HasMany

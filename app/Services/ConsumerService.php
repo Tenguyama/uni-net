@@ -6,6 +6,7 @@ use App\Http\Requests\Consumer\ConsumerLoginRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
+use App\Models\Consumer;
 use App\Repositories\ConsumerRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -52,4 +53,15 @@ class ConsumerService
     public function search(SearchRequest $request){
         return $this->repository->search($request);
     }
+
+    public function authorizeProfile()
+    {
+        return $this->repository->authorizeProfile();
+    }
+
+    public function getProfile(Consumer $consumer)
+    {
+        return $this->repository->getProfile($consumer);
+    }
+
 }

@@ -30,8 +30,8 @@ class Fakult extends Model
         return $this->hasMany(Consumer::class);
     }
 
-    public function groups(): BelongsToMany
+    public function groups(): HasMany
     {
-        return $this->belongsToMany(Group::class, 'facult_group');
+        return $this->hasMany(Group::class);
     }
 }

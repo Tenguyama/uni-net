@@ -19,6 +19,8 @@ class CommentLike extends Model
 
     public $timestamps = false;
 
+    protected $hidden = ['id', 'comment_id', 'consumer_id'];
+
     public function comment(): BelongsTo
     {
         return $this->belongsTo(Comment::class);

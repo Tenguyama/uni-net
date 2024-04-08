@@ -9,12 +9,12 @@ use Illuminate\Http\JsonResponse;
 class LanguageController extends Controller
 {
     //ONLY FOR ADMIN PANEL
-    //create +
-    //update +
-    //delete +
+    //create ✅
+    //update ✅
+    //delete ✅
 
     //API
-    //getAll +
+    //getAll ✅
     private readonly LanguageService $service;
 
     public function __construct(

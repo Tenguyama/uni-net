@@ -29,8 +29,8 @@ class CommunityService
         return $this->repository->save($request, null);
     }
 
-    public function update(CommunityRequest $request, string $id){
-        return $this->repository->save($request, $id);
+    public function update(CommunityRequest $request, Community $community){
+        return $this->repository->save($request, $community);
     }
     public function delete(Community $community){
         return $this->repository->delete($community);
@@ -38,5 +38,9 @@ class CommunityService
 
     public function search(SearchRequest $request){
         return $this->repository->search($request);
+    }
+
+    public function getProfile(Community $community){
+        return $this->repository->getProfile($community);
     }
 }
