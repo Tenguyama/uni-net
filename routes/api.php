@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\v1\FakultController;
 use App\Http\Controllers\Api\v1\FollowController;
 use App\Http\Controllers\Api\v1\GroupController;
 use App\Http\Controllers\Api\v1\LanguageController;
+use App\Http\Controllers\Api\v1\MessageController;
 use App\Http\Controllers\Api\v1\PostController;
 use App\Http\Controllers\Api\v1\PostLikeController;
 use App\Http\Controllers\Api\v1\ThemeController;
@@ -110,6 +111,16 @@ Route::prefix('v1')
             Route::group(['prefix'=>'group'], function(){
                 //select +
                 Route::get('/select/{group}', [GroupController::class ,'select']);
+            });
+            //Message
+            Route::group(['prefix'=>'message'],function(){
+                //create    +
+                //update    +
+                //delete    +
+                Route::post('/create', [MessageController::class, 'create']);
+                Route::put('/update', [MessageController::class, 'update']);
+                Route::delete('/delete', [MessageController::class, 'delete']);
+
             });
         });
         Route::middleware('guest')->group( function () {

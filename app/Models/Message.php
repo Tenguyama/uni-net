@@ -18,7 +18,7 @@ class Message extends Model
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function chat(): BelongsTo
     {

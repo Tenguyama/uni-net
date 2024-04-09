@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUuid('chat_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignUuid('consumer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('body')->nullable();
+            $table->timestamps();
         });
     }
 
