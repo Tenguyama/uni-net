@@ -19,6 +19,15 @@ class Chat extends Model
 
     public $timestamps = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function (Chat $chat) {
+            $chat->consumerChats()->delete();
+            $chat->messages()->delete();
+        });
+    }
+
     public function consumerChats(): HasMany
     {
         return $this->hasMany(ConsumerChat::class);

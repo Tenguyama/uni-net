@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\ChatController;
 use App\Http\Controllers\Api\v1\CommentController;
 use App\Http\Controllers\Api\v1\CommentLikeController;
 use App\Http\Controllers\Api\v1\CommunityController;
@@ -120,8 +121,29 @@ Route::prefix('v1')
                 Route::post('/create', [MessageController::class, 'create']);
                 Route::put('/update', [MessageController::class, 'update']);
                 Route::delete('/delete', [MessageController::class, 'delete']);
-
             });
+            //Chat
+            Route::group(['prefix'=>'chat'], function (){
+                //-getChatById              +
+                //-getLastMessages          +
+                //-findOrCreateSoloChat     +
+                //-createMultiChat          +
+                //-addPermission            +
+                //-addConsumerToChat        +
+                //-updateChat               +
+                //-deleteConsumerForChat    +
+                //-deleteChat               +
+                Route::get('/get/{chat}', [ChatController::class,'getChatById']);
+                Route::post('/last-messages', [ChatController::class, 'getLastMessages']);
+                Route::get('/find-or-create-solo-chat/{consumer}', [ChatController::class,'findOrCreateSoloChat']);
+                Route::post('/create-multi-chat', [ChatController::class, 'createMultiChat']);
+                Route::post('/add-permission', [ChatController::class, 'addPermission']);
+                Route::post('/add-consumer-to-chat', [ChatController::class, 'addConsumerToChat']);
+                Route::put('/update', [ChatController::class, 'updateChat']);
+                Route::delete('/delete-consumer-from-chat/', [ChatController::class, 'deleteConsumerForChat']);
+                Route::delete('/delete/{chat}', [ChatController::class, 'deleteChat']);
+            });
+
         });
         Route::middleware('guest')->group( function () {
             //Consumer

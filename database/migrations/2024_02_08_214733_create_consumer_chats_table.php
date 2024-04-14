@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignUuid('consumer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->boolean('is_creator')->default(false);
             $table->boolean('is_admin')->default(false);
-            $table->boolean('is_delete')->default(false);
         });
     }
 
