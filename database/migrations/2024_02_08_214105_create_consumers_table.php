@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignUuid('fakult_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignUuid('group_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('telegram_nickname')->nullable();
-            $table->boolean('is_locked')->default('false');
+            $table->boolean('is_locked')->default(false);
         });
     }
 
