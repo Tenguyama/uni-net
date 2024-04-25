@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
+use App\Http\Requests\Consumer\ConsumerRegisterRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
@@ -36,6 +37,10 @@ class ConsumerController extends Controller
     public function loginWithProvider(ConsumerSocialiteRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->loginWithProvider($request), 201);
+    }
+    public function register(ConsumerRegisterRequest $request): JsonResponse
+    {
+        return new JsonResponse($this->service->register($request),201);
     }
     public function login(ConsumerLoginRequest $request): JsonResponse
     {

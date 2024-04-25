@@ -54,9 +54,14 @@ Route::prefix('v1')
             });
             //Community
             Route::group(['prefix' => 'community'], function(){
+                //?????????????????????????????????
                 Route::post('/create', [CommunityController::class, 'create']);
+                //?????????????????????????????????
                 Route::put('/update/{community}',  [CommunityController::class, 'update']);
+                //?????????????????????????????????
                 Route::delete('/delete/{community}',  [CommunityController::class, 'delete']);
+                //?????????????????????????????????
+
                 //CommunityManager
                 Route::group(['prefix'=>'manager'], function (){
                     //create    +
@@ -83,6 +88,18 @@ Route::prefix('v1')
                     Route::delete('/delete', [CommentLikeController::class, 'delete']);
                 });
             });
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
+            ///
             //Post
             Route::group(['prefix'=>'post'], function () {
                 //getAllPostByTrackable     +
@@ -150,9 +167,11 @@ Route::prefix('v1')
             Route::group(['prefix' => 'consumer'], function() {
                 //registerWithProvider  +
                 //loginWithProvider     +
+                //register              +
                 //login                 +
                 Route::post('/register-with-provider', [ConsumerController::class, 'registerWithProvider']);
                 Route::post('/login-with-provider', [ConsumerController::class, 'loginWithProvider']);
+                Route::post('/register', [ConsumerController::class, 'register']);
                 Route::post('/login', [ConsumerController::class, 'login']);
             });
         });

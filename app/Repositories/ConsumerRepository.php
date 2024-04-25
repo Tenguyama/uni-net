@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
+use App\Http\Requests\Consumer\ConsumerRegisterRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
@@ -75,6 +76,26 @@ class ConsumerRepository
         if (!in_array($provider, ['google'])) {
             return ["message" => 'You can only login via google account'];
         }
+        return null;
+    }
+
+    public function register(ConsumerRegisterRequest $request)
+    {
+        $params = [
+            'nickname' => $request->input('nickname'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ];
+
+        $consumer = $this->model->query()
+            ->create($params);
+
+        $consumer->load('media');
+
+        return [
+            'token' => $consumer->createToken('Sanctum')->plainTextToken,
+            'consumer' => $consumer,
+        ];
     }
 
     public function login(ConsumerLoginRequest $request){

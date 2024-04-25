@@ -40,12 +40,13 @@ class Consumer extends Authenticatable
         });
     }
 
-    private function password(): Attribute
+    protected function password(): Attribute
     {
         return Attribute::make(
-            set: fn (string $password) => Hash::make($password)
+            set: fn ($value) => Hash::make($value)
         );
     }
+
 
     public function fakult(): BelongsTo
     {

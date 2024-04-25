@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Consumer;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class ConsumerLoginRequest extends FormRequest
+class ConsumerRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +23,10 @@ class ConsumerLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'nickname' => 'required|string|unique:consumers,nickname',
+            'email' => 'required|string|email|unique:consumers,email',
+            'password' => 'required|string|min:8',
+            'password_confirmation' => 'required|string|same:password'
         ];
     }
 }

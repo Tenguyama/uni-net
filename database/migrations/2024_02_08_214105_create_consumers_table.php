@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nickname')->unique();
             $table->string('email')->unique();
-            $table->string('password')->nullable();
-            $table->string('name');
+            $table->string('password');
+            $table->string('name')->nullable();
             $table->string('status')->nullable();
             $table->string('description')->nullable();
             $table->foreignUuid('fakult_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();

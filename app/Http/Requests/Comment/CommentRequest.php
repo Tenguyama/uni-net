@@ -24,7 +24,6 @@ class CommentRequest extends FormRequest
         return [
             'id' => 'sometimes|required|uuid|exists:comments,id',
             'post_id' => 'required|uuid|exists:posts,id',
-//            'consumer_id' => 'required|uuid|exists:consumers,id',
             'parent_id' => 'nullable|uuid|exists:comments,id',
             'body' => 'required|string',
         ];

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\Consumer\ConsumerLoginRequest;
+use App\Http\Requests\Consumer\ConsumerRegisterRequest;
 use App\Http\Requests\Consumer\ConsumerRequest;
 use App\Http\Requests\Consumer\ConsumerSocialiteRequest;
 use App\Http\Requests\SearchRequest;
@@ -33,6 +34,10 @@ class ConsumerService
     }
     public function loginWithProvider(ConsumerSocialiteRequest $request){
         return $this->repository->save($request);
+    }
+
+    public function register(ConsumerRegisterRequest $request){
+        return $this->repository->register($request);
     }
 
     public function login(ConsumerLoginRequest $request){

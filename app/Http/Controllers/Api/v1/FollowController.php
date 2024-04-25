@@ -25,12 +25,12 @@ class FollowController extends Controller
         return new JsonResponse($this->service->follow($request), 201);
     }
 
-    public function getFollowers(FollowRequest $request)
+    public function getFollowers(FollowRequest $request): JsonResponse
     {
         return new JsonResponse($this->service->getFollowers($request), 200);
     }
 
-    public function getTrackable(Consumer $consumer)
+    public function getTrackable(Consumer $consumer): JsonResponse
     {
         return new JsonResponse($this->service->getTrackable($consumer), 200);
     }
