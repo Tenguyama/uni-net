@@ -38,8 +38,9 @@ class CommunityRepository
         return self::$instance;
     }
 
-    public function save(CommunityRequest $request, ?Community $community){
+    public function save(CommunityRequest $request){
         $consumerId = Auth::user()->id;
+        $communityId = $request->has('id') ? $request->input('id') : null;
         $params = [
             'nickname' => $request->input('nickname'),
             'description' => $request->input('description'),
@@ -47,28 +48,36 @@ class CommunityRepository
             'is_locked' => $request->input('is_locked'),
         ];
 
-        if(isset($community) and !empty($community)){
-            $newCommunity = $this->model->query()->updateOrCreate(['id'=>$community->id], $params);
+        if(isset($communityId) and !empty($communityId)){
+            $existsCommunity = $this->model->query()
+                ->where('id', '=', $communityId)
+                ->where('consumer_id','=',$consumerId)
+                ->exists();
+            if($existsCommunity){
+                $community = $this->model->query()->updateOrCreate(['id'=>$communityId], $params);
+            }else{
+                $community = $this->model->query()->create($params);
+            }
         }else{
-            $newCommunity = $this->model->query()->create($params);
+            $community = $this->model->query()->create($params);
         }
 
         if ($request->has('avatar')) {
             $avatarUrl = $request->input('avatar');
-            $media = $newCommunity->media()->first();
+            $media = $community->media()->first();
             if (isset($media) and !empty($media)) {
                 $media->path = $avatarUrl;
                 $media->save();
             } else {
                 $media = new Media();
-                $media->mediable_id = $newCommunity->id;
+                $media->mediable_id = $community->id;
                 $media->mediable_type = $this->model::class;
                 $media->path = $avatarUrl;
                 $media->save();
             }
         }
-        $newCommunity->load('media');
-        return $newCommunity;
+        $community->load('media');
+        return $community;
     }
 
     public function delete(Community $community){

@@ -29,8 +29,8 @@ class CommunityService
         return $this->repository->save($request, null);
     }
 
-    public function update(CommunityRequest $request, Community $community){
-        return $this->repository->save($request, $community);
+    public function update(CommunityRequest $request){
+        return $this->repository->save($request);
     }
     public function delete(Community $community){
         return $this->repository->delete($community);

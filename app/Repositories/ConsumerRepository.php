@@ -194,7 +194,7 @@ class ConsumerRepository
                 ->exists();
             // Кількість підписок користувача на користувачів/групи
             $consumerFollowCount = $this->follow->query()
-                ->where('consumer_id','=',$consumer->id)
+                ->where('follower_id','=',$consumer->id)
                 ->count();
 
             // Кількість підписок на користувача
@@ -237,7 +237,7 @@ class ConsumerRepository
             ->first();
         //к-сть підписок користувача на користувачів/групи
         $consumerFollowCount = $this->follow->query()
-            ->where('consumer_id','=',$consumerId)
+            ->where('follower_id','=',$consumerId)
             ->count();
         //к-сть підписок на користувача
         $followConsumerCount = $this->follow->query()

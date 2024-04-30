@@ -27,9 +27,9 @@ class CommunityController extends Controller
     {
         return new JsonResponse($this->service->create($request), 201);
     }
-    public function update(CommunityRequest $request, Community $community): JsonResponse
+    public function update(CommunityRequest $request): JsonResponse
     {
-        return new JsonResponse($this->service->update($request, $community), 201);
+        return new JsonResponse($this->service->update($request), 201);
     }
 
     public function delete(Community $community): JsonResponse

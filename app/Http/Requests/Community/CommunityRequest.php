@@ -22,10 +22,9 @@ class CommunityRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('id');
-
         return [
-            'nickname' => 'required|string|unique:communities,nickname,' . ($id ? $id : 'NULL'),
+            'id' => 'sometimes|required|uuid|exists,communities,id',
+            'nickname' => 'required|string|unique:communities,nickname,' . ($this->id ?? 'NULL'),
             'description' => 'nullable|string',
             'is_locked' => 'required|boolean',
             'avatar' => 'sometimes|required|url',

@@ -32,7 +32,7 @@ class Consumer extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-        static::creating(fn (Consumer $consumer) =>  $consumer->nickname = explode('@', $consumer->email)[0]);
+//        static::creating(fn (Consumer $consumer) =>  $consumer->nickname = explode('@', $consumer->email)[0]);
         static::deleting(function (Consumer $consumer) {
             $consumer->tokens()->delete();
             $consumer->media()->delete();
