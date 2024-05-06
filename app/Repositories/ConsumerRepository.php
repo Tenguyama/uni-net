@@ -188,7 +188,7 @@ class ConsumerRepository
                 ->firstOrFail();
 
             $thisConsumerFollow =  $this->follow->query()
-                ->where('consumer_id','=',$consumerId)
+                ->where('follower_id','=',$consumerId)
                 ->where('trackable_id','=',$consumer->id)
                 ->where('trackable_type','=',Consumer::class)
                 ->exists();

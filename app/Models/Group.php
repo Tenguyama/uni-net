@@ -21,7 +21,7 @@ class Group extends Model
 
     public $timestamps = false;
 
-    public function groupDescriptions(): HasMany
+    public function groupDescription(): HasMany
     {
         return $this->hasMany(GroupDescription::class);
     }
@@ -30,7 +30,7 @@ class Group extends Model
     {
         return $this->hasMany(Consumer::class);
     }
-    public function fakults(): BelongsTo
+    public function fakult(): BelongsTo
     {
         return $this->belongsTo(Fakult::class);
     }

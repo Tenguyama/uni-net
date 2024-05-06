@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FakultResource\Pages;
 use App\Filament\Resources\FakultResource\RelationManagers;
 use App\Models\Fakult;
+use App\Models\Language;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -21,17 +23,45 @@ class FakultResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
+        $languages = Language::all();
+        $result = array();
+        $result[] = Forms\Components\Section::make('Основне')
             ->schema([
-                //
+                TextInput::make('url')
+                    ->required()
+                    ->label('Посилання'),
+
             ]);
+        foreach ($languages as $language) {
+            $result[] = Forms\Components\Section::make($language->locale)
+                ->id($language->id)
+                ->schema([
+                    TextInput::make('languages.'.$language->id.'.name')//'name')//
+                        ->label('Назва (' . $language->locale . ')')
+                        ->required(),
+                ]);
+        }
+
+        return $form->schema($result);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('url')
+                    ->label('URL')
+                    ->sortable()
+                    ->url(fn ($record) => $record->url),
+                Tables\Columns\TextColumn::make('fakultDescription.language.locale')
+                    ->label('Moва')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('fakultDescription.name')
+                    ->label('Назва')
+                    ->sortable(),
             ])
             ->filters([
                 //
