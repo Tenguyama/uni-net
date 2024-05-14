@@ -108,55 +108,57 @@ class PostRepository
     }
 
     public function getPostById(Post $post)
-     {
-         $findPost = $this->model->query()->with([
-             'postLikes' => function ($query) {
-                 $query->selectRaw('post_id, COUNT(*) as total')
-                     ->selectRaw("SUM(is_liked = '1') as likes")
-                     ->selectRaw("SUM(is_liked = '0') as dislikes")
-                     ->groupBy('post_id');
-             },
-             'thisConsumerLiked',
-             'media',
-             'comments' => function ($query) {
-                 $query->with([
-                     'consumer' => function ($query) {
-                         $query->with('media');
-                     },
-                     'thisConsumerLiked',
-                     'commentLikes' => function ($query) {
-                         $query->selectRaw('comment_id, COUNT(*) as total')
-                             ->selectRaw("SUM(is_liked = '1') as likes")
-                             ->selectRaw("SUM(is_liked = '0') as dislikes")
-                             ->groupBy('comment_id');
-                     },
-                 ])->oldest();
-                 // або
-                 //])->orderBy('created_at', 'asc');
-             },
-             'postable' => function ($query) {
-                 $query->with(['media'])->select(['id', 'nickname']);
-             }
-         ])->findOrFail($post->id);
-         $findPost->postable_type = $findPost->postable->getMorphClass();
-         $findPost->author_details = [
-             'id' => $findPost->postable->id,
-             'nickname' => $findPost->postable->nickname,
-             'type' => $findPost->postable_type instanceof Consumer ? 'consumer' : 'community',
-             'avatar' => $findPost->postable->media ? $findPost->postable->media->path : null
-         ];
+    {
+        $findPost = $this->model->query()->with([
+            'postLikes' => function ($query) {
+                $query->selectRaw('post_id, COUNT(*) as total')
+                    ->selectRaw("SUM(is_liked = '1') as likes")
+                    ->selectRaw("SUM(is_liked = '0') as dislikes")
+                    ->groupBy('post_id');
+            },
+            'thisConsumerLiked',
+            'media',
+            'comments' => function ($query) {
+                $query->with([
+                    'consumer' => function ($query) {
+                        $query->with('media');
+                    },
+                    'thisConsumerLiked',
+                    'commentLikes' => function ($query) {
+                        $query->selectRaw('comment_id, COUNT(*) as total')
+                            ->selectRaw("SUM(is_liked = '1') as likes")
+                            ->selectRaw("SUM(is_liked = '0') as dislikes")
+                            ->groupBy('comment_id');
+                    },
+                ])->oldest();
+                // або
+                //])->orderBy('created_at', 'asc');
+            },
+            'postable' => function ($query) {
+                $query->with(['media'])->select(['id', 'nickname']);
+            }
+        ])->findOrFail($post->id);
+        $findPost->postable_type = $findPost->postable->getMorphClass();
+        $findPost->author_details = [
+            'id' => $findPost->postable->id,
+            'nickname' => $findPost->postable->nickname,
+            'type' => $findPost->postable_type instanceof Consumer ? 'consumer' : 'community',
+            'avatar' => $findPost->postable->media ? $findPost->postable->media->path : null
+        ];
 
-         unset($findPost->postable_id);
-         unset($findPost->postable_type);
-         unset($findPost->postable);
+        unset($findPost->postable_id);
+        unset($findPost->postable_type);
+        unset($findPost->postable);
 
-         return $findPost;
-     }
+        return $findPost;
+    }
 
     public function save(PostRequest $request, ?Post $post){
         $consumerId = Auth::user()->id;
-        $type = PostTypeEnum::from($request->input('postable_type'))->modelClass();
+        $typeNamespase = PostTypeEnum::from($request->input('postable_type'))->modelClass();
+        $type = new $typeNamespase();
         $postableId = $request->input('postable_id');
+
         $postable = $type->query()->find($postableId);
 
         if (!$postable) {
@@ -183,7 +185,7 @@ class PostRepository
 
         $params = [
             'postable_id' => $request->input('postable_id'),
-            'postable_type' => $type,
+            'postable_type' => $typeNamespase,
             'theme_id' => $request->input('theme_id'),
             'description' => $request->input('description'),
         ];

@@ -28,7 +28,7 @@ class PostRequest extends FormRequest
                 'required',
                 'uuid',
                 function($attribute, $value, $fail) {
-                    $type = $this->input('trackable_type');
+                    $type = $this->input('postable_type');
                     try {
                         $complaintType = PostTypeEnum::from($type);
                         $model = $complaintType->modelClass();
