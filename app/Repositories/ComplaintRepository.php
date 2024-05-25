@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\ComplaintTypeEnum;
 use App\Http\Requests\Complaint\ComplaintRequest;
 use App\Models\Complaint;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +28,10 @@ class ComplaintRepository
     public function create(ComplaintRequest $request){
         $consumerId = Auth::user()->id;
         $type = $request->input('complaintable_type');
+        $complaintType = ComplaintTypeEnum::from($type);
         $params = [
             'complaintable_id' => $request->input('complaintable_id'),
-            'complaintable_type' => $type->modelClass(),
+            'complaintable_type' => $complaintType->modelClass(),
             'consumer_id' => $consumerId,
             'description' => $request->input('description'),
         ];

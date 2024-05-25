@@ -3,6 +3,9 @@
 namespace App\Filament\Resources\ComplaintResource\Pages;
 
 use App\Filament\Resources\ComplaintResource;
+use App\Models\Comment;
+use App\Models\Consumer;
+use App\Models\Post;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -20,70 +23,56 @@ class EditComplaint extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        // тут обробка всієї штуки
-        // якщо в формі - рішення видалять - то видаляю і ставлю четек тру
-        // якщо в формі - рішення не видалять -  ставлю четек тру
-//        $languages = $data['languages'];
-//        unset($data['languages']);
-//        $record->update($data);
-//        foreach ($languages as $langId => $language) {
-//            $groupDescription = GroupDescription::query()
-//                ->where('group_id','=',$record->id)
-//                ->where('language_id' ,'=', $langId)
-//                ->first();
-//            if($groupDescription){
-//                $groupDescription->update($language);
-//            }
-//        }
-
-
-
-        // Tables\Columns\TextColumn::make('id')
-        //                    ->label('ID')
-        //                    ->searchable(),
-        //                Tables\Columns\IconColumn::make('is_checked')
-        //                    ->sortable()
-        //                    ->boolean(),
-        //                Tables\Columns\TextColumn::make('complaintable_type')
-        //                    ->searchable(),
-        //                Tables\Columns\TextColumn::make('description')
-        //                    ->searchable(),
-        //                Tables\Columns\TextColumn::make('created_at')
-        //                    ->dateTime()
-        //                    ->sortable()
-        //                    ->toggleable(isToggledHiddenByDefault: true),
-        //                Tables\Columns\TextColumn::make('updated_at')
-        //                    ->dateTime()
-        //                    ->sortable()
-        //                    ->toggleable(isToggledHiddenByDefault: true),
+        $is_delete = false;
+        if (!$data['is_delete']){
+            if($data['clear']){
+                $is_delete = true;
+            }
+        }
+        if ($is_delete){
+            $complaintable = $record->complaintable;
+            $complaintable->delete();
+        }
+        $record->is_checked = true;
+        $record->save();
         return $record;
     }
 
     public function fillFormWithDataAndCallHooks(Model $record, array $extraData = []): void
     {
-//        ('complaintable_type')
-//        ('complaintable_data')
-//        ('consumer_data')
-//        ('description')
-//        ('is_delete')
-//        ('is_checked')
-//        ('clear')
-//
+        $consumer = Consumer::query()
+            ->where('id','=',$record->consumer_id)
+            ->first();
 
         $complaintable = $record->complaintable;
-        dd();
+        if(!empty($complaintable)){
+            $complaintable->load(['media']);
+            $complaintable->consumer = Consumer::query()
+                ->where('id','=',$complaintable->consumer_id)
+                ->first();
+        }
 
-//        $groupDescriptions = $record->groupDescription;
-//        $languages = Language::all();
-//        $formData = array();
-//        $formData['fakult_id'] = $record->fakult_id;
-//        foreach ($groupDescriptions as $groupDescription) {
-//            foreach ($languages as $language) {
-//                if ($groupDescription->language_id == $language->id) {
-//                    $formData['languages'][$language->id]['name'] = $groupDescription['name'];
-//                }
-//            }
-//        }
+//        unset($complaintable->consumer);
+
+        if(isset($complaintable->postable_id)){
+            $complaintable_type = Post::class;
+        }else{
+            $complaintable_type = Comment::class;
+        }
+
+        $model_type = new $complaintable_type();
+        $is_delete = $model_type->query()->where('id','=',$record->complaintable_id)->exists();
+
+        $formData = [
+            'complaintable_type' => $complaintable_type,
+            'complaintable_data' => json_encode($complaintable, JSON_PRETTY_PRINT), // Форматування JSON у багаторядковий вигляд
+            'consumer_data' => json_encode($consumer, JSON_PRETTY_PRINT), // Форматування JSON у багаторядковий вигляд
+            'description' => $record->description,
+            'is_delete' => !$is_delete,
+            'is_checked' => (bool)$record->is_checked,
+            'clear' => !$is_delete,
+        ];
+
         $this->form->fill($formData);
     }
 }

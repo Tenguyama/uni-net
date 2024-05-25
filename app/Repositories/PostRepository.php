@@ -43,7 +43,7 @@ class PostRepository
                     ->selectRaw("SUM(is_liked = '0') as dislikes")
                     ->groupBy('post_id');
             },
-            'thisConsumerLiked',
+            //'thisConsumerLiked',
             'media',
             'postable' => function ($query) {
                 $query->with(['media'])->select(['id', 'nickname']);
@@ -51,6 +51,14 @@ class PostRepository
         ]);
         $posts = $query->where('postable_id' ,'!=', $consumerId)
             ->latest()->get();
+
+        $authUserId = Auth::check();
+        if ($authUserId) {
+            $posts->load(['thisConsumerLiked' => function ($query) use ($authUserId) {
+                $query->where('consumer_id', $authUserId);
+            }]);
+        }
+
         $posts->each(function ($post) {
             $post->author_details = [
                 'id' => $post->postable->id,
@@ -78,7 +86,7 @@ class PostRepository
                     ->selectRaw("SUM(is_liked = '0') as dislikes")
                     ->groupBy('post_id');
             },
-            'thisConsumerLiked',
+            //'thisConsumerLiked',
             'media',
             'postable' => function ($query) {
                 $query->with(['media'])->select(['id', 'nickname']);
@@ -92,7 +100,14 @@ class PostRepository
                 });
             }
         });
+
         $posts = $query->latest()->get();
+        $authUserId = Auth::check();
+        if ($authUserId) {
+            $posts->load(['thisConsumerLiked' => function ($query) use ($authUserId) {
+                $query->where('consumer_id', $authUserId);
+            }]);
+        }
         $posts->each(function ($post) {
             $post->author_details = [
                 'id' => $post->postable->id,
@@ -116,14 +131,14 @@ class PostRepository
                     ->selectRaw("SUM(is_liked = '0') as dislikes")
                     ->groupBy('post_id');
             },
-            'thisConsumerLiked',
+            //'thisConsumerLiked',
             'media',
             'comments' => function ($query) {
                 $query->with([
                     'consumer' => function ($query) {
                         $query->with('media');
                     },
-                    'thisConsumerLiked',
+                    //'thisConsumerLiked',
                     'commentLikes' => function ($query) {
                         $query->selectRaw('comment_id, COUNT(*) as total')
                             ->selectRaw("SUM(is_liked = '1') as likes")
@@ -138,6 +153,17 @@ class PostRepository
                 $query->with(['media'])->select(['id', 'nickname']);
             }
         ])->findOrFail($post->id);
+
+        $authUserId = Auth::check();
+        if ($authUserId) {
+            $findPost->load(['thisConsumerLiked' => function ($query) use ($authUserId) {
+                $query->where('consumer_id', $authUserId);
+            }]);
+            $findPost->load(['comments.thisConsumerLiked' => function ($query) use ($authUserId) {
+                $query->where('consumer_id', $authUserId);
+            }]);
+        }
+
         $findPost->postable_type = $findPost->postable->getMorphClass();
         $findPost->author_details = [
             'id' => $findPost->postable->id,

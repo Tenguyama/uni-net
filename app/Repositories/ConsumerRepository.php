@@ -187,11 +187,16 @@ class ConsumerRepository
                 ->with('media')
                 ->firstOrFail();
 
-            $thisConsumerFollow =  $this->follow->query()
-                ->where('follower_id','=',$consumerId)
-                ->where('trackable_id','=',$consumer->id)
-                ->where('trackable_type','=',Consumer::class)
-                ->exists();
+            if($consumerId){
+                $thisConsumerFollow =  $this->follow->query()
+                    ->where('follower_id','=',$consumerId)
+                    ->where('trackable_id','=',$consumer->id)
+                    ->where('trackable_type','=',Consumer::class)
+                    ->exists();
+            }else{
+                $thisConsumerFollow =  true;
+            }
+
             // Кількість підписок користувача на користувачів/групи
             $consumerFollowCount = $this->follow->query()
                 ->where('follower_id','=',$consumer->id)
@@ -212,7 +217,7 @@ class ConsumerRepository
 
             // Отримання публікацій користувача
             if ($returnPost) {
-                $posts = $this->getConsumerPosts($consumerId);
+                $posts = $this->getConsumerPosts($consumer->id);
             } else {
                 $posts = [
                     'message' => 'This profile is locked!',
@@ -265,12 +270,20 @@ class ConsumerRepository
                     ->selectRaw("SUM(is_liked = '0') as dislikes")
                     ->groupBy('post_id');
             },
-            'thisConsumerLiked',
+            //'thisConsumerLiked',
             'media',
             'postable' => function ($query) {
                 $query->with(['media'])->select(['id', 'nickname']);
             }
         ])->where('postable_id' ,'=', $consumerId)->latest()->get();
+
+        $authUserId = Auth::check();
+        if ($authUserId) {
+            $posts->load(['thisConsumerLiked' => function ($query) use ($authUserId) {
+                $query->where('consumer_id', $authUserId);
+            }]);
+        }
+
         $posts->each(function ($post) {
             $post->author_details = [
                 'id' => $post->postable->id,

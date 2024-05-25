@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\FollowTypeEnum;
 use App\Http\Requests\Follow\FollowRequest;
 use App\Models\Community;
 use App\Models\Consumer;
@@ -29,25 +30,33 @@ class FollowRepository
     }
 
     public function follow(FollowRequest $request){
-        $consumerId = Auth::user()->id;
-        $type = $request->input('trackable_type');
-        $params = [
-            'trackable_id' => $request->input('trackable_id'),
-            'trackable_type' => $type->modelClass(),
-            'follower_id' => $consumerId,
-        ];
+        if(Auth::check()){
+            $consumerId = Auth::user()->id;
+            $type = $request->input('trackable_type');
+            $followType = FollowTypeEnum::from($type);
+            $params = [
+                'trackable_id' => $request->input('trackable_id'),
+                'trackable_type' => $followType->modelClass(),
+                'follower_id' => $consumerId,
+            ];
 
-        $follow = $this->model->query()
-            ->where('trackable_id', '=', $params['trackable_id'])
-            ->where('trackable_type', '=', $params['trackable_type'])
-            ->where('follower_id', '=', $params['follower_id'])
-            ->first();
+            $follow = $this->model->query()
+                ->where('trackable_id', '=', $params['trackable_id'])
+                ->where('trackable_type', '=', $params['trackable_type'])
+                ->where('follower_id', '=', $params['follower_id'])
+                ->first();
 
-        if(isset($follow) and !empty($follow)){
-            return $follow->delete();
+            if(isset($follow) and !empty($follow)){
+                return $follow->delete();
+            }else{
+                return $this->model->query()->create($params);
+            }
         }else{
-            return $this->model->query()->create($params);
+            return [
+                'message' => 'not valid authorize token'
+            ];
         }
+
     }
 
     public function getFollowers(FollowRequest $request)
